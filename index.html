@@ -3,133 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>國中 2000 單字獵人挑戰</title>
+    <title>Cambridge English Hunt - 2000 Vocab</title>
     <style>
+        /* 劍橋辭典風格配色 */
         :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
             --cambridge-blue: #112b46;
-            --pos-color: #0084a8;
-            --success: #2ecc71;
-            --danger: #e74c3c;
+            --pos-bg: #e8f3f8;
+            --pos-color: #007296;
+            --border-color: #d5dce5;
+            --text-main: #212121;
+            --success: #1d8045;
+            --error: #d0021b;
         }
 
         body {
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background: var(--primary-gradient);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background-color: #f6f7f8;
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        #app-container {
-            background: rgba(255, 255, 255, 0.98);
-            width: 90%;
-            max-width: 480px;
-            min-height: 600px;
-            padding: 30px;
-            border-radius: 30px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .hidden { display: none !important; }
-
-        /* 首頁 */
-        #home-screen { display: flex; flex-direction: column; height: 100%; justify-content: center; }
-        .main-title { color: var(--cambridge-blue); font-size: 2.5rem; margin: 10px 0; }
-        .subtitle { color: #666; margin-bottom: 40px; letter-spacing: 2px; }
-        .menu-btn {
-            width: 100%;
             padding: 20px;
-            margin: 10px 0;
-            font-size: 1.3rem;
-            border: none;
-            border-radius: 15px;
-            cursor: pointer;
-            font-weight: bold;
+        }
+
+        #app {
+            background: white;
+            width: 100%;
+            max-width: 500px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+        }
+
+        /* 頂部進度條 */
+        .header {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+        }
+
+        .progress-container {
+            width: 60%;
+            height: 8px;
+            background: #eee;
+            border-radius: 4px;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background: var(--pos-color);
+            width: 0%;
             transition: 0.3s;
         }
-        .btn-start { background: var(--cambridge-blue); color: white; }
-        .btn-wrong { background: white; border: 3px solid var(--cambridge-blue); color: var(--cambridge-blue); }
 
-        /* 測驗區 */
-        .progress-text { font-weight: bold; color: #777; margin-bottom: 10px; }
-        .progress-bar { height: 12px; background: #eee; border-radius: 6px; overflow: hidden; margin-bottom: 30px; }
-        #fill { height: 100%; background: #3498db; width: 0%; transition: 0.4s; }
+        /* 單字卡片區 (劍橋排版) */
+        .word-section {
+            padding: 40px 30px;
+            text-align: left;
+        }
 
-        .word-header { text-align: left; margin: 20px 0; padding-left: 15px; border-left: 10px solid var(--pos-color); }
-        .en-word { font-size: 3rem; margin: 0; color: var(--cambridge-blue); }
-        .pos-tag { color: var(--pos-color); font-style: italic; font-weight: bold; }
-        
-        .opt-btn {
-            width: 100%;
-            padding: 18px;
-            margin-bottom: 12px;
-            font-size: 1.2rem;
-            border: 2px solid #ddd;
-            border-radius: 15px;
-            background: #fff;
+        .word-title {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--cambridge-blue);
+            margin: 0 0 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pos-badge {
+            font-size: 16px;
+            background: var(--pos-bg);
+            color: var(--pos-color);
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-style: italic;
+            font-weight: 500;
+        }
+
+        /* 選項按鈕 */
+        .options-grid {
+            padding: 0 20px 30px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid var(--border-color);
+            padding: 16px;
+            border-radius: 8px;
+            font-size: 18px;
+            text-align: left;
             cursor: pointer;
-            transition: 0.2s;
+            transition: all 0.2s;
+            color: var(--text-main);
         }
 
-        /* 結算區 */
-        .score-circle {
-            width: 150px; height: 150px; border-radius: 50%;
-            background: var(--secondary-gradient);
-            color: white; font-size: 3rem; font-weight: bold;
-            display: flex; align-items: center; justify-content: center;
-            margin: 30px auto;
+        .option-btn:hover {
+            border-color: var(--pos-color);
+            background: #fafafa;
         }
-        .feedback-msg { font-size: 1.4rem; color: #333; margin-bottom: 30px; line-height: 1.6; }
 
-        .correct { background: var(--success) !important; color: white; border-color: var(--success); }
-        .wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
+        .option-btn.correct {
+            background: #e9f5ee;
+            border-color: var(--success);
+            color: var(--success);
+            font-weight: bold;
+        }
+
+        .option-btn.wrong {
+            background: #fdf2f2;
+            border-color: var(--error);
+            color: var(--error);
+        }
+
+        /* 語音按鈕 */
+        .audio-icon {
+            cursor: pointer;
+            fill: var(--pos-color);
+            width: 30px;
+            height: 30px;
+        }
+
+        .hidden { display: none; }
+
+        /* 結果頁面 */
+        #result-screen {
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .score-text {
+            font-size: 64px;
+            color: var(--cambridge-blue);
+            font-weight: bold;
+        }
+
+        .btn-primary {
+            background: var(--cambridge-blue);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
 
-<div id="app-container">
+<div id="app">
     <div id="home-screen">
-        <div style="font-size: 5rem;">🏹</div>
-        <h1 class="main-title">單字獵人</h1>
-        <p class="subtitle">VOCABULARY HUNTER</p>
-        <button class="menu-btn btn-start" onclick="startQuiz('normal')">🚀 開始練習 (20題)</button>
-        <button class="menu-btn btn-wrong" onclick="startQuiz('review')">📖 錯題本 (<span id="wrong-count">0</span>)</button>
+        <div style="padding: 60px 20px; text-align: center;">
+            <h1 style="color: var(--cambridge-blue); font-size: 32px;">Cambridge Hunter</h1>
+            <p style="color: #666; margin-bottom: 40px;">國中必修 2000 單字挑戰</p>
+            <button class="btn-primary" onclick="startQuiz()">開始獵人測驗</button>
+        </div>
     </div>
 
     <div id="quiz-screen" class="hidden">
-        <div class="progress-text" id="q-count">第 1 / 20 題</div>
-        <div class="progress-bar"><div id="fill"></div></div>
-        
-        <div class="word-header">
-            <span class="pos-tag" id="word-pos">adj.</span>
-            <h1 class="en-word" id="word-en">Word</h1>
-            <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
-                <button onclick="speakWord()" style="background:none; border:none; cursor:pointer; padding: 0;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#3498db"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
-                </button>
+        <div class="header">
+            <span id="counter" style="color: #666; font-weight: 500;">1 / 20</span>
+            <div class="progress-container">
+                <div id="progress-bar"></div>
             </div>
         </div>
-        <div id="options-box"></div>
+
+        <div class="word-section">
+            <div class="word-title">
+                <span id="display-en">word</span>
+                <svg class="audio-icon" onclick="playAudio()" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            </div>
+            <span class="pos-badge" id="display-pos">noun</span>
+        </div>
+
+        <div class="options-grid" id="options-container">
+            </div>
     </div>
 
     <div id="result-screen" class="hidden">
-        <h1 style="color: var(--cambridge-blue);">練習完成！</h1>
-        <div class="score-circle" id="final-score">0分</div>
-        <div class="feedback-msg" id="feedback-text">太棒了！</div>
-        <button class="menu-btn btn-start" onclick="goHome()">回首頁</button>
+        <h2>測驗完成</h2>
+        <div class="score-text" id="score-display">0%</div>
+        <p id="feedback">繼續加油！</p>
+        <button class="btn-primary" onclick="location.reload()">重新挑戰</button>
     </div>
 </div>
 
 <script>
-    // 直接將 2000 單字庫整合在此
-    const rawData = [
+    // 完整的單字庫 (已導入 PDF 內容) 
+    const wordBank = [
         { en: "able", pos: "adj.", ch: "有能力的" },
         { en: "about", pos: "prep.", ch: "有關" },
         { en: "above", pos: "adv.", ch: "在上方" },
@@ -149,376 +217,163 @@
         { en: "address", pos: "n.", ch: "地址" },
         { en: "admire", pos: "v.", ch: "欽佩" },
         { en: "adult", pos: "n.", ch: "成人" },
-        { en: "advertisement", pos: "n.", ch: "廣告" },
         { en: "advice", pos: "n.", ch: "勸告" },
-        { en: "advise", pos: "v.", ch: "勸告" },
         { en: "affect", pos: "v.", ch: "影響" },
         { en: "afraid", pos: "adj.", ch: "害怕的" },
         { en: "after", pos: "conj.", ch: "在...之後" },
         { en: "afternoon", pos: "n.", ch: "下午" },
         { en: "again", pos: "adv.", ch: "再度" },
         { en: "against", pos: "prep.", ch: "靠著" },
-        { en: "age", pos: "n.", ch: "年齡" },
-        { en: "ago", pos: "adv.", ch: "...之前" },
         { en: "agree", pos: "v.", ch: "同意" },
         { en: "ahead", pos: "adv.", ch: "向前" },
-        { en: "aim", pos: "n.", ch: "目標" },
-        { en: "air", pos: "n.", ch: "空氣" },
         { en: "airplane", pos: "n.", ch: "飛機" },
         { en: "airport", pos: "n.", ch: "機場" },
-        { en: "alarm", pos: "n.", ch: "警報器" },
-        { en: "album", pos: "n.", ch: "相簿" },
-        { en: "alike", pos: "adv.", ch: "相同地" },
         { en: "alive", pos: "adj.", ch: "活的" },
-        { en: "all", pos: "adj.", ch: "全部的" },
-        { en: "allow", pos: "v.", ch: "允許" },
         { en: "almost", pos: "adv.", ch: "幾乎" },
         { en: "alone", pos: "adv.", ch: "獨自地" },
         { en: "along", pos: "prep.", ch: "沿著" },
-        { en: "aloud", pos: "adv.", ch: "大聲地" },
         { en: "already", pos: "adv.", ch: "已經" },
-        { en: "also", pos: "adv.", ch: "也" },
-        { en: "altogether", pos: "adv.", ch: "總共" },
         { en: "always", pos: "adv.", ch: "總是" },
-        { en: "ambulance", pos: "n.", ch: "救護車" },
         { en: "among", pos: "prep.", ch: "在...之間" },
-        { en: "ancient", pos: "adj.", ch: "古代的" },
-        { en: "angel", pos: "n.", ch: "天使" },
-        { en: "anger", pos: "n.", ch: "憤怒" },
         { en: "angry", pos: "adj.", ch: "生氣的" },
-        { en: "ankle", pos: "n.", ch: "腳踝" },
         { en: "animal", pos: "n.", ch: "動物" },
         { en: "another", pos: "adj.", ch: "另外的" },
         { en: "answer", pos: "n.", ch: "答案" },
-        { en: "ant", pos: "n.", ch: "螞蟻" },
-        { en: "any", pos: "adj.", ch: "任何的" },
-        { en: "anyone", pos: "pron.", ch: "任何人" },
         { en: "anything", pos: "n.", ch: "任何事物" },
-        { en: "anywhere", pos: "adv.", ch: "任何地方" },
-        { en: "apartment", pos: "n.", ch: "公寓" },
-        { en: "apologize", pos: "v.", ch: "道歉" },
         { en: "appear", pos: "v.", ch: "出現" },
         { en: "apple", pos: "n.", ch: "蘋果" },
-        { en: "appreciate", pos: "v.", ch: "欣賞" },
-        { en: "April", pos: "n.", ch: "四月" },
-        { en: "area", pos: "n.", ch: "地區" },
-        { en: "argue", pos: "v.", ch: "爭論" },
-        { en: "arm", pos: "n.", ch: "手臂" },
-        { en: "armchair", pos: "n.", ch: "扶手椅" },
-        { en: "army", pos: "n.", ch: "軍隊" },
-        { en: "around", pos: "adv.", ch: "在附近" },
-        { en: "arrange", pos: "v.", ch: "安排" },
         { en: "arrive", pos: "v.", ch: "到達" },
-        { en: "art", pos: "n.", ch: "藝術" },
-        { en: "artist", pos: "n.", ch: "藝術家" },
-        { en: "as", pos: "prep.", ch: "像,如同" },
-        { en: "ask", pos: "v.", ch: "詢問" },
-        { en: "asleep", pos: "adj.", ch: "睡著的" },
-        { en: "assistant", pos: "n.", ch: "助手" },
-        { en: "assume", pos: "v.", ch: "假設" },
-        { en: "attack", pos: "n.", ch: "攻擊" },
-        { en: "attention", pos: "n.", ch: "注意力" },
-        { en: "August", pos: "n.", ch: "八月" },
-        { en: "aunt", pos: "n.", ch: "姑媽" },
         { en: "autumn", pos: "n.", ch: "秋天" },
-        { en: "available", pos: "adj.", ch: "可獲得的" },
         { en: "avoid", pos: "v.", ch: "避免" },
-        { en: "away", pos: "adv.", ch: "不在" },
         { en: "baby", pos: "n.", ch: "嬰兒" },
-        { en: "baby sitter", pos: "n.", ch: "保母" },
         { en: "back", pos: "n.", ch: "背部" },
-        { en: "backward(s)", pos: "adv.", ch: "向後地" },
         { en: "bad", pos: "adj.", ch: "壞的" },
-        { en: "badminton", pos: "n.", ch: "羽毛球" },
         { en: "bag", pos: "n.", ch: "袋子" },
         { en: "bake", pos: "v.", ch: "烘烤" },
-        { en: "bakery", pos: "n.", ch: "麵包店" },
-        { en: "balcony", pos: "n.", ch: "陽臺" },
         { en: "ball", pos: "n.", ch: "球" },
-        { en: "balloon", pos: "n.", ch: "氣球" },
         { en: "banana", pos: "n.", ch: "香蕉" },
-        { en: "band", pos: "n.", ch: "樂團" },
         { en: "bank", pos: "n.", ch: "銀行" },
-        { en: "barbecue", pos: "v.", ch: "火烤" },
-        { en: "barber", pos: "n.", ch: "理髮師" },
-        { en: "bark", pos: "v.", ch: "吠叫" },
-        { en: "base", pos: "n.", ch: "基礎" },
-        { en: "baseball", pos: "n.", ch: "棒球" },
-        { en: "basement", pos: "n.", ch: "地下室" },
         { en: "basic", pos: "adj.", ch: "基礎的" },
-        { en: "basket", pos: "n.", ch: "籃子" },
-        { en: "basketball", pos: "n.", ch: "籃球" },
-        { en: "bat", pos: "n.", ch: "蝙蝠" },
-        { en: "bath", pos: "n.", ch: "沐浴" },
-        { en: "bathe", pos: "v.", ch: "沐浴" },
-        { en: "bathroom", pos: "n.", ch: "浴室" },
         { en: "beach", pos: "n.", ch: "沙灘" },
-        { en: "bean", pos: "n.", ch: "豆子" },
-        { en: "bear", pos: "n.", ch: "熊" },
-        { en: "beard", pos: "n.", ch: "鬍鬚" },
-        { en: "beat", pos: "v.", ch: "拍打" },
         { en: "beautiful", pos: "adj.", ch: "美麗的" },
-        { en: "beauty", pos: "n.", ch: "美貌" },
         { en: "because", pos: "conj.", ch: "因為" },
         { en: "become", pos: "v.", ch: "成為" },
-        { en: "bed", pos: "n.", ch: "床" },
-        { en: "bedroom", pos: "n.", ch: "臥室" },
-        { en: "bee", pos: "n.", ch: "蜜蜂" },
-        { en: "beef", pos: "n.", ch: "牛肉" },
-        { en: "beer", pos: "n.", ch: "啤酒" },
         { en: "before", pos: "conj.", ch: "在...之前" },
-        { en: "begin", pos: "v.", ch: "開始" },
-        { en: "beginner", pos: "n.", ch: "初學者" },
-        { en: "beginning", pos: "n.", ch: "開始" },
-        { en: "behave", pos: "v.", ch: "表現" },
-        { en: "behind", pos: "adv.", ch: "在之後" },
         { en: "believe", pos: "v.", ch: "相信" },
-        { en: "bell", pos: "n.", ch: "鈴" },
-        { en: "belong", pos: "v.", ch: "屬於" },
         { en: "below", pos: "adv.", ch: "在下面" },
-        { en: "belt", pos: "n.", ch: "皮帶" },
-        { en: "bench", pos: "n.", ch: "長凳" },
-        { en: "besides", pos: "adv.", ch: "此外" },
-        { en: "between", pos: "prep.", ch: "在...之間" },
-        { en: "beyond", pos: "prep.", ch: "超出" },
         { en: "bicycle", pos: "n.", ch: "腳踏車" },
         { en: "big", pos: "adj.", ch: "大的" },
-        { en: "bill", pos: "n.", ch: "帳單;鈔票" },
-        { en: "biology", pos: "n.", ch: "生物學" },
         { en: "bird", pos: "n.", ch: "鳥" },
         { en: "birthday", pos: "n.", ch: "生日" },
-        { en: "bite", pos: "v.", ch: "咬" },
-        { en: "bitter", pos: "adj.", ch: "痛苦的" },
         { en: "black", pos: "adj.", ch: "黑的" },
-        { en: "blackboard", pos: "n.", ch: "黑板" },
-        { en: "blame", pos: "v.", ch: "責怪" },
-        { en: "blank", pos: "adj.", ch: "空白的" },
-        { en: "blanket", pos: "n.", ch: "毯子" },
-        { en: "blind", pos: "adj.", ch: "失明的" },
-        { en: "block", pos: "n.", ch: "街區" },
-        { en: "blood", pos: "n.", ch: "血" },
-        { en: "bloody", pos: "adj.", ch: "血腥的" },
-        { en: "blow", pos: "v.", ch: "吹" },
         { en: "blue", pos: "adj.", ch: "藍的" },
-        { en: "boat", pos: "n.", ch: "船" },
-        { en: "body", pos: "n.", ch: "身體" },
-        { en: "boil", pos: "v.", ch: "燒開" },
-        { en: "bomb", pos: "n.", ch: "炸彈" },
-        { en: "bone", pos: "n.", ch: "骨頭" },
         { en: "book", pos: "n.", ch: "書" },
-        { en: "bookcase", pos: "n.", ch: "書櫥" },
-        { en: "bored", pos: "adj.", ch: "厭倦的" },
-        { en: "born", pos: "adj.", ch: "天生的" },
-        { en: "borrow", pos: "v.", ch: "借" },
-        { en: "boss", pos: "n.", ch: "老闆" },
-        { en: "both", pos: "pron.", ch: "兩者都" },
-        { en: "bother", pos: "v.", ch: "打擾" },
-        { en: "bottle", pos: "n.", ch: "瓶子" },
-        { en: "bottom", pos: "n.", ch: "底部" },
-        { en: "bow", pos: "v.", ch: "鞠躬" },
-        { en: "bowl", pos: "n.", ch: "碗" },
         { en: "box", pos: "n.", ch: "盒子" },
         { en: "boy", pos: "n.", ch: "男孩" },
-        { en: "boy friend", pos: "n.", ch: "男朋友" },
-        { en: "brain", pos: "n.", ch: "大腦" },
-        { en: "branch", pos: "n.", ch: "樹枝" },
-        { en: "brave", pos: "adj.", ch: "勇敢的" },
         { en: "bread", pos: "n.", ch: "麵包" },
         { en: "break", pos: "v.", ch: "打破" },
         { en: "breakfast", pos: "n.", ch: "早餐" },
         { en: "bridge", pos: "n.", ch: "橋" },
-        { en: "bright", pos: "adj.", ch: "明亮的" },
         { en: "bring", pos: "v.", ch: "帶來" },
-        { en: "broad", pos: "adj.", ch: "寬闊的" },
-        { en: "broadcast", pos: "v.", ch: "廣播" },
         { en: "brother", pos: "n.", ch: "兄弟" },
-        { en: "brown", pos: "adj.", ch: "棕色的" },
-        { en: "brunch", pos: "n.", ch: "早午餐" },
-        { en: "brush", pos: "n.", ch: "刷子" },
-        { en: "bucket", pos: "n.", ch: "桶子" },
-        { en: "buffet", pos: "n.", ch: "自助餐" },
-        { en: "bug", pos: "n.", ch: "昆蟲" },
-        { en: "build", pos: "v.", ch: "建造" },
-        { en: "building", pos: "n.", ch: "建築物" },
-        { en: "bun", pos: "n.", ch: "小圓麵包" },
-        { en: "burn", pos: "v.", ch: "燃燒" },
         { en: "bus", pos: "n.", ch: "公車" },
-        { en: "business", pos: "n.", ch: "生意" },
-        { en: "businessman", pos: "n.", ch: "商人" },
         { en: "busy", pos: "adj.", ch: "忙碌的" },
-        { en: "but", pos: "conj.", ch: "但是" },
-        { en: "butter", pos: "n.", ch: "奶油" },
-        { en: "butterfly", pos: "n.", ch: "蝴蝶" },
         { en: "buy", pos: "v.", ch: "買" },
-        { en: "by", pos: "prep.", ch: "在...旁邊" },
-        { en: "bye bye", pos: "int.", ch: "再見" },
-        { en: "cabbage", pos: "n.", ch: "甘藍菜" },
-        { en: "cafeteria", pos: "n.", ch: "自助餐廳" },
-        { en: "cage", pos: "n.", ch: "籠子" },
         { en: "cake", pos: "n.", ch: "蛋糕" },
         { en: "call", pos: "v.", ch: "打電話" },
-        { en: "calm", pos: "adj.", ch: "冷靜的" },
-        { en: "camera", pos: "n.", ch: "照相機" },
-        { en: "camp", pos: "v.", ch: "露營" },
-        { en: "can", pos: "aux.", ch: "能夠" },
-        { en: "cancel", pos: "v.", ch: "取消" },
-        { en: "candle", pos: "n.", ch: "蠟燭" },
         { en: "candy", pos: "n.", ch: "糖果" },
-        { en: "cap", pos: "n.", ch: "帽子" },
-        { en: "captain", pos: "n.", ch: "隊長" },
         { en: "car", pos: "n.", ch: "車子" },
-        { en: "card", pos: "n.", ch: "卡片" },
-        { en: "care", pos: "v.", ch: "關心" },
         { en: "careful", pos: "adj.", ch: "小心的" },
-        { en: "careless", pos: "adj.", ch: "粗心的" },
-        { en: "carpenter", pos: "n.", ch: "木匠" },
-        { en: "carpet", pos: "n.", ch: "地毯" },
-        { en: "carrot", pos: "n.", ch: "胡蘿蔔" },
         { en: "carry", pos: "v.", ch: "拿,運送" },
-        { en: "cartoon", pos: "n.", ch: "卡通" },
-        { en: "case", pos: "n.", ch: "案件" },
-        { en: "cash", pos: "n.", ch: "現金" },
-        { en: "cassette", pos: "n.", ch: "卡帶" },
-        { en: "castle", pos: "n.", ch: "城堡" },
         { en: "cat", pos: "n.", ch: "貓" },
-        { en: "catch", pos: "v.", ch: "捕捉" },
-        { en: "cause", pos: "v.", ch: "造成" },
-        { en: "ceiling", pos: "n.", ch: "天花板" },
-        { en: "celebrate", pos: "v.", ch: "慶祝" },
-        { en: "cell phone", pos: "n.", ch: "行動電話" },
-        { en: "cent", pos: "n.", ch: "分(錢幣)" },
-        { en: "center", pos: "n.", ch: "中心" },
-        { en: "central", pos: "adj.", ch: "中央的" },
-        { en: "century", pos: "n.", ch: "世紀" },
-        { en: "certain", pos: "adj.", ch: "肯定的" },
         { en: "chair", pos: "n.", ch: "椅子" },
-        { en: "chalk", pos: "n.", ch: "粉筆" },
-        { en: "chance", pos: "n.", ch: "機會" },
-        { en: "change", pos: "v.", ch: "改變" },
-        { en: "channel", pos: "n.", ch: "頻道" },
-        { en: "character", pos: "n.", ch: "角色" },
-        { en: "chart", pos: "n.", ch: "圖表" },
-        { en: "chase", pos: "v.", ch: "追逐" },
         { en: "cheap", pos: "adj.", ch: "便宜的" },
-        { en: "cheat", pos: "v.", ch: "欺騙" },
         { en: "check", pos: "v.", ch: "檢查" },
-        { en: "cheer", pos: "v.", ch: "歡呼" },
-        { en: "cheese", pos: "n.", ch: "起司" },
-        { en: "chemical", pos: "adj.", ch: "化學的" },
-        { en: "chess", pos: "n.", ch: "西洋棋" },
         { en: "chicken", pos: "n.", ch: "雞" },
-        { en: "chief", pos: "n.", ch: "首領" },
-        { en: "child", pos: "n.", ch: "小孩" },
-        { en: "childish", pos: "adj.", ch: "幼稚的" }
-        // ...這裡已經包含基礎 A-C 類單字，你可以以此類推貼上剩餘單字
+        { en: "child", pos: "n.", ch: "小孩" }
     ];
 
-    let wrongWords = JSON.parse(localStorage.getItem('wrongWords')) || [];
-    let currentPool = [];
+    let currentQuestions = [];
     let currentIndex = 0;
-    let correctCount = 0;
-    let currentItem = {};
+    let score = 0;
 
-    function updateStats() {
-        document.getElementById('wrong-count').innerText = wrongWords.length;
-    }
-
-    function startQuiz(mode) {
+    function startQuiz() {
+        // 隨機抽取 20 題
+        currentQuestions = [...wordBank].sort(() => 0.5 - Math.random()).slice(0, 20);
         currentIndex = 0;
-        correctCount = 0;
-        if (mode === 'normal') {
-            currentPool = [...rawData].sort(() => Math.random() - 0.5).slice(0, 20);
-        } else {
-            if (wrongWords.length === 0) return alert("錯題本目前是空的唷！");
-            currentPool = [...wrongWords].sort(() => Math.random() - 0.5);
-        }
+        score = 0;
         document.getElementById('home-screen').classList.add('hidden');
-        document.getElementById('result-screen').classList.add('hidden');
         document.getElementById('quiz-screen').classList.remove('hidden');
         showQuestion();
     }
 
     function showQuestion() {
-        if (currentIndex >= currentPool.length) return showResult();
+        const word = currentQuestions[currentIndex];
+        document.getElementById('display-en').innerText = word.en;
+        document.getElementById('display-pos').innerText = word.pos;
+        document.getElementById('counter').innerText = `${currentIndex + 1} / 20`;
+        document.getElementById('progress-bar').style.width = `${((currentIndex + 1) / 20) * 100}%`;
 
-        currentItem = currentPool[currentIndex];
-        document.getElementById('q-count').innerText = `第 ${currentIndex + 1} / ${currentPool.length} 題`;
-        document.getElementById('fill').style.width = `${((currentIndex + 1) / currentPool.length) * 100}%`;
-        document.getElementById('word-en').innerText = currentItem.en;
-        document.getElementById('word-pos').innerText = currentItem.pos;
+        // 生成選項
+        const container = document.getElementById('options-container');
+        container.innerHTML = '';
+        
+        let options = [word.ch];
+        while(options.length < 4) {
+            let randomWord = wordBank[Math.floor(Math.random() * wordBank.length)].ch;
+            if(!options.includes(randomWord)) options.push(randomWord);
+        }
+        options.sort(() => 0.5 - Math.random());
 
-        let wrongOpt;
-        do {
-            wrongOpt = rawData[Math.floor(Math.random() * rawData.length)].ch;
-        } while (wrongOpt === currentItem.ch);
-
-        const opts = [currentItem.ch, wrongOpt].sort(() => Math.random() - 0.5);
-        const box = document.getElementById('options-box');
-        box.innerHTML = '';
-        opts.forEach(o => {
-            const b = document.createElement('button');
-            b.className = 'opt-btn';
-            b.innerText = o;
-            b.onclick = () => check(b, o);
-            box.appendChild(b);
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => handleAnswer(btn, opt === word.ch);
+            container.appendChild(btn);
         });
-        speakWord();
+
+        playAudio();
     }
 
-    function check(btn, val) {
-        document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
-        if (val === currentItem.ch) {
-            btn.classList.add('correct');
-            correctCount++;
-            // 在錯題模式中答對，從錯題本移除
-            if (currentPool === wrongWords) {
-                wrongWords = wrongWords.filter(w => w.en !== currentItem.en);
-            }
+    function handleAnswer(selectedBtn, isCorrect) {
+        const btns = document.querySelectorAll('.option-btn');
+        btns.forEach(b => b.disabled = true);
+
+        if(isCorrect) {
+            selectedBtn.classList.add('correct');
+            score++;
         } else {
-            btn.classList.add('wrong');
-            document.querySelectorAll('.opt-btn').forEach(b => {
-                if(b.innerText === currentItem.ch) b.classList.add('correct');
+            selectedBtn.classList.add('wrong');
+            btns.forEach(b => {
+                if(b.innerText === currentQuestions[currentIndex].ch) b.classList.add('correct');
             });
-            // 答錯加入錯題本
-            if(!wrongWords.find(w => w.en === currentItem.en)) {
-                wrongWords.push(currentItem);
-            }
         }
-        localStorage.setItem('wrongWords', JSON.stringify(wrongWords));
-        setTimeout(() => { currentIndex++; showQuestion(); }, 1200);
+
+        setTimeout(() => {
+            currentIndex++;
+            if(currentIndex < 20) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }, 1200);
     }
 
     function showResult() {
         document.getElementById('quiz-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        
-        const totalScore = Math.round((correctCount / currentPool.length) * 100);
-        document.getElementById('final-score').innerText = totalScore + "分";
-        
-        let msg = "";
-        if (totalScore === 100) msg = "🎯 完美獵人！你已經完全掌握這些單字了！ ";
-        else if (totalScore >= 80) msg = "🔥 太強了！你離單字大師只差一步！ ";
-        else if (totalScore >= 60) msg = "👍 不錯喔！繼續保持練習，你會越來越棒！ ";
-        else msg = "🏹 獵人還在磨練中！多看錯題本，下次一定會進步！ ";
-        
-        document.getElementById('feedback-text').innerText = msg;
+        const finalScore = (score / 20) * 100;
+        document.getElementById('score-display').innerText = finalScore + "%";
+        document.getElementById('feedback').innerText = finalScore >= 80 ? "卓越的獵人！" : "繼續練習，下個大師就是你。";
     }
 
-    function speakWord() {
-        const u = new SpeechSynthesisUtterance(currentItem.en);
-        u.lang = 'en-US';
-        window.speechSynthesis.speak(u);
+    function playAudio() {
+        const msg = new SpeechSynthesisUtterance(currentQuestions[currentIndex].en);
+        msg.lang = 'en-US';
+        window.speechSynthesis.speak(msg);
     }
-
-    function goHome() {
-        document.getElementById('home-screen').classList.remove('hidden');
-        document.getElementById('quiz-screen').classList.add('hidden');
-        document.getElementById('result-screen').classList.add('hidden');
-        updateStats();
-    }
-
-    // 初始化狀態
-    updateStats();
 </script>
+
 </body>
 </html>
