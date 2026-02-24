@@ -1,4 +1,3 @@
-// data.js 檔案內容
 const rawData = [
     { en: "able", pos: "adj.", ch: "有能力的", kk: "/ˈebl/" },
     { en: "about", pos: "prep.", ch: "有關", kk: "/əˈbaʊt/" },
@@ -322,5 +321,4 @@ const rawData = [
     { en: "child", pos: "n.", ch: "小孩", kk: "/tʃaɪld/" },
     { en: "childish", pos: "adj.", ch: "幼稚的", kk: "/ˈtʃaɪldɪʃ/" }
     // ... 更多單字可依照此格式添加
-];
 ];
