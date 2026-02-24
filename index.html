@@ -3,21 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>國中 2000 單字獵人</title>
+    <title>國中 2000 單字獵人挑戰</title>
     <style>
         :root {
-            --primary-blue: #112b46;
-            --accent-blue: #d2e4f7;
-            --word-color: #1d2a57;
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --cambridge-blue: #112b46;
             --pos-color: #0084a8;
-            --success: #27ae60;
-            --danger: #ff4757;
-            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --success: #2ecc71;
+            --danger: #e74c3c;
         }
 
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            background: var(--bg-gradient);
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            background: var(--primary-gradient);
             margin: 0;
             display: flex;
             justify-content: center;
@@ -26,234 +25,231 @@
         }
 
         #app-container {
-            background: white;
+            background: rgba(255, 255, 255, 0.98);
             width: 90%;
-            max-width: 450px;
-            min-height: 500px;
+            max-width: 480px;
+            min-height: 600px;
             padding: 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            text-align: center;
             display: flex;
             flex-direction: column;
         }
 
         .hidden { display: none !important; }
 
-        /* 首頁樣式 */
-        #home-screen {
-            text-align: center;
-            margin: auto;
-        }
-
-        .logo { font-size: 3rem; margin-bottom: 10px; }
-        .main-title { color: var(--primary-blue); margin-bottom: 40px; }
-        
+        /* 首頁 */
+        .main-title { color: var(--cambridge-blue); font-size: 2.5rem; margin-bottom: 5px; }
+        .subtitle { color: #666; margin-bottom: 40px; letter-spacing: 2px; }
         .menu-btn {
             width: 100%;
             padding: 20px;
             margin: 10px 0;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             border: none;
             border-radius: 15px;
             cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
             font-weight: bold;
+            transition: 0.3s;
+        }
+        .btn-start { background: var(--cambridge-blue); color: white; }
+        .btn-wrong { background: white; border: 3px solid var(--cambridge-blue); color: var(--cambridge-blue); }
+
+        /* 測驗區 */
+        .progress-text { font-weight: bold; color: #777; margin-bottom: 10px; }
+        .progress-bar { height: 12px; background: #eee; border-radius: 6px; overflow: hidden; margin-bottom: 30px; }
+        #fill { height: 100%; background: #3498db; width: 0%; transition: 0.4s; }
+
+        .word-header { text-align: left; margin: 20px 0; padding-left: 15px; border-left: 10px solid var(--pos-color); }
+        .en-word { font-size: 3rem; margin: 0; color: var(--cambridge-blue); }
+        .pos-tag { color: var(--pos-color); font-style: italic; font-weight: bold; }
+        
+        .opt-btn {
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+            border: 2px solid #ddd;
+            border-radius: 15px;
+            background: #fff;
+            cursor: pointer;
+            transition: 0.2s;
         }
 
-        .btn-start { background: var(--primary-blue); color: white; }
-        .btn-wrong { background: white; border: 2px solid var(--primary-blue); color: var(--primary-blue); }
-        .menu-btn:hover { transform: translateY(-3px); opacity: 0.9; }
+        /* 結算畫面 */
+        .score-circle {
+            width: 150px; height: 150px; border-radius: 50%;
+            background: var(--secondary-gradient);
+            color: white; font-size: 3rem; font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            margin: 30px auto;
+        }
+        .feedback-msg { font-size: 1.4rem; color: #333; margin-bottom: 30px; line-height: 1.6; }
 
-        /* 測驗區域樣 style 同前次 */
-        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #7f8c8d; }
-        .bar-container { flex-grow: 1; height: 8px; background: #eee; border-radius: 10px; margin: 0 15px; overflow: hidden; }
-        #progress-fill { height: 100%; background: #3498db; width: 0%; transition: width 0.4s; }
-
-        .word-header { text-align: left; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
-        .en-word { font-size: 2.8rem; font-weight: bold; color: var(--word-color); margin: 0; }
-        .pos-tag { color: var(--pos-color); font-style: italic; font-weight: bold; font-size: 1rem; }
-        .pronunciation { display: flex; align-items: center; margin-top: 10px; gap: 10px; }
-        .phonetic { color: #555; font-size: 1.1rem; }
-        .speaker-btn { background: none; border: none; cursor: pointer; color: #3498db; }
-
-        .options-grid { display: grid; gap: 12px; }
-        .opt-btn { background: #f8fbff; border: 2px solid var(--accent-blue); padding: 16px; font-size: 1.1rem; border-radius: 12px; cursor: pointer; transition: 0.2s; }
         .correct { background: var(--success) !important; color: white; border-color: var(--success); }
         .wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
-        
-        .back-link { margin-top: 20px; color: #95a5a6; cursor: pointer; text-decoration: underline; font-size: 0.9rem; text-align: center; }
     </style>
 </head>
 <body>
 
 <div id="app-container">
     <div id="home-screen">
-        <div class="logo">🏹</div>
-        <h1 class="main-title">單字獵人挑戰</h1>
-        <button class="menu-btn btn-start" onclick="startQuiz('normal')">開始練習 (20題)</button>
-        <button class="menu-btn btn-wrong" onclick="startQuiz('review')">錯題本 (<span id="wrong-count">0</span>)</button>
+        <div style="font-size: 5rem;">🏹</div>
+        <h1 class="main-title">單字獵人</h1>
+        <p class="subtitle">VOCABULARY HUNTER</p>
+        <button class="menu-btn btn-start" onclick="startQuiz('normal')">🚀 開始練習 (20題)</button>
+        <button class="menu-btn btn-wrong" onclick="startQuiz('review')">📖 錯題本 (<span id="wrong-count">0</span>)</button>
     </div>
 
     <div id="quiz-screen" class="hidden">
-        <div class="progress-header">
-            <span id="q-count">1/20</span>
-            <div class="bar-container"><div id="progress-fill"></div></div>
-            <span id="score-display">🎯 0</span>
-        </div>
-
+        <div class="progress-text" id="q-count">第 1 / 20 題</div>
+        <div class="progress-bar"><div id="fill"></div></div>
+        
         <div class="word-header">
-            <h1 class="en-word" id="word-en">Word</h1>
             <span class="pos-tag" id="word-pos">adj.</span>
-            <div class="pronunciation">
-                <span class="phonetic" id="word-kk">/kk/</span>
-                <button class="speaker-btn" onclick="speakWord()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+            <h1 class="en-word" id="word-en">Word</h1>
+            <div style="display:flex; align-items:center; gap:10px; margin-top:10px;">
+                <span id="word-kk" style="color:#666;">/kk/</span>
+                <button onclick="speakWord()" style="background:none; border:none; cursor:pointer;">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="#3498db"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
                 </button>
             </div>
         </div>
 
-        <div class="options-grid" id="options-box"></div>
-        <div class="back-link" onclick="goHome()">返回主選單</div>
+        <div id="options-box"></div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <h1 style="color: var(--cambridge-blue);">練習完成！</h1>
+        <div class="score-circle" id="final-score">0</div>
+        <div class="feedback-msg" id="feedback-text">太棒了！</div>
+        <button class="menu-btn btn-start" onclick="goHome()">回首頁</button>
     </div>
 </div>
 
 <script>
-    // 範例資料庫 (建議之後可以把 2000 字放進一個獨立的 JSON 檔)
+    [cite_start]// 單字資料庫 (整理自 PDF) [cite: 1]
     const rawData = [
-        { en: "able", kk: "/ˈebl/", pos: "adj.", ch: "有能力的" },
-        { en: "absent", kk: "/ˈæbsnt/", pos: "adj.", ch: "缺席的" },
-        { en: "accept", kk: "/əkˈsɛpt/", pos: "v.", ch: "接受" },
-        { en: "accident", kk: "/ˈæksədənt/", pos: "n.", ch: "意外" },
-        { en: "across", kk: "/əˈkrɔs/", pos: "prep.", ch: "在...對面" },
-        { en: "active", kk: "/ˈæktɪv/", pos: "adj.", ch: "積極的" },
-        { en: "admire", kk: "/ədˈmaɪr/", pos: "v.", ch: "欽佩" },
-        { en: "advice", kk: "/ədˈvaɪs/", pos: "n.", ch: "勸告" },
-        { en: "affect", kk: "/əˈfɛkt/", pos: "v.", ch: "影響" },
-        { en: "afraid", kk: "/əˈfred/", pos: "adj.", ch: "害怕的" }
+        { en: "able", pos: "adj.", ch: "有能力的", kk: "/ˈebl/" },
+        { en: "about", pos: "prep.", ch: "有關", kk: "/əˈbaʊt/" },
+        { en: "above", pos: "adv.", ch: "在上方", kk: "/əˈbʌv/" },
+        { en: "abroad", pos: "adv.", ch: "在國外", kk: "/əˈbrɔːd/" },
+        { en: "absent", pos: "adj.", ch: "缺席的", kk: "/ˈæbsənt/" },
+        { en: "accept", pos: "v.", ch: "接受", kk: "/əkˈsept/" },
+        { en: "accident", pos: "n.", ch: "意外", kk: "/ˈæksɪdənt/" },
+        { en: "across", pos: "prep.", ch: "在...對面", kk: "/əˈkrɔːs/" },
+        { en: "active", pos: "adj.", ch: "積極的", kk: "/ˈæktɪv/" },
+        { en: "actually", pos: "adv.", ch: "確實", kk: "/ˈæktʃuəli/" },
+        { en: "admire", pos: "v.", ch: "欽佩", kk: "/ədˈmaɪər/" },
+        { en: "advice", pos: "n.", ch: "勸告", kk: "/ədˈvaɪs/" },
+        { en: "affect", pos: "v.", ch: "影響", kk: "/əˈfekt/" },
+        { en: "afraid", pos: "adj.", ch: "害怕的", kk: "/əˈfreɪd/" },
+        { en: "alive", pos: "adj.", ch: "活的", kk: "/əˈlaɪv/" },
+        { en: "allow", pos: "v.", ch: "允許", kk: "/əˈlaʊ/" },
+        { en: "ancient", pos: "adj.", ch: "古代的", kk: "/ˈeɪnʃənt/" },
+        { en: "available", pos: "adj.", ch: "可獲得的", kk: "/əˈveɪləbl/" },
+        { en: "avoid", pos: "v.", ch: "避免", kk: "/əˈvɔɪd/" },
+        { en: "bakery", pos: "n.", ch: "麵包店", kk: "/ˈbeɪkəri/" }
     ];
 
-    let currentMode = 'normal'; // 'normal' 或 'review'
-    let quizPool = [];
+    let wrongWords = JSON.parse(localStorage.getItem('wrongWords')) || [];
+    let currentPool = [];
     let currentIndex = 0;
-    let score = 0;
+    let correctCount = 0;
     let currentItem = {};
 
-    // 初始化：讀取錯題本
-    let wrongWords = JSON.parse(localStorage.getItem('wrongWords')) || [];
-
-    function updateHomeStats() {
-        document.getElementById('wrong-count').innerText = wrongWords.length;
-    }
-
     function startQuiz(mode) {
-        currentMode = mode;
         currentIndex = 0;
-        score = 0;
-        
+        correctCount = 0;
         if (mode === 'normal') {
-            quizPool = [...rawData].sort(() => Math.random() - 0.5).slice(0, 20);
+            currentPool = [...rawData].sort(() => Math.random() - 0.5).slice(0, 20);
         } else {
-            if (wrongWords.length === 0) {
-                alert("目前沒有錯題喔！加油！");
-                return;
-            }
-            quizPool = [...wrongWords].sort(() => Math.random() - 0.5);
+            if (wrongWords.length === 0) return alert("錯題本目前是空的唷！");
+            currentPool = [...wrongWords].sort(() => Math.random() - 0.5);
         }
-
         document.getElementById('home-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.add('hidden');
         document.getElementById('quiz-screen').classList.remove('hidden');
-        nextQuestion();
+        showQuestion();
     }
 
-    function nextQuestion() {
-        if (currentIndex < quizPool.length) {
-            currentItem = quizPool[currentIndex];
-            renderCard();
-        } else {
-            alert(currentMode === 'normal' ? "練習結束！" : "錯題複習完成！");
-            goHome();
-        }
-    }
+    function showQuestion() {
+        if (currentIndex >= currentPool.length) return showResult();
 
-    function renderCard() {
+        currentItem = currentPool[currentIndex];
+        document.getElementById('q-count').innerText = `第 ${currentIndex + 1} / ${currentPool.length} 題`;
+        document.getElementById('fill').style.width = `${((currentIndex + 1) / currentPool.length) * 100}%`;
         document.getElementById('word-en').innerText = currentItem.en;
         document.getElementById('word-pos').innerText = currentItem.pos;
         document.getElementById('word-kk').innerText = currentItem.kk;
-        document.getElementById('q-count').innerText = `${currentIndex + 1} / ${quizPool.length}`;
-        document.getElementById('score-display').innerText = `🎯 ${score}`;
-        document.getElementById('progress-fill').style.width = `${(currentIndex / quizPool.length) * 100}%`;
 
-        // 生成干擾選項
         let wrongOpt;
         do {
             wrongOpt = rawData[Math.floor(Math.random() * rawData.length)].ch;
         } while (wrongOpt === currentItem.ch);
 
-        const options = [currentItem.ch, wrongOpt].sort(() => Math.random() - 0.5);
+        const opts = [currentItem.ch, wrongOpt].sort(() => Math.random() - 0.5);
         const box = document.getElementById('options-box');
         box.innerHTML = '';
-
-        options.forEach(opt => {
-            const btn = document.createElement('button');
-            btn.className = 'opt-btn';
-            btn.innerText = opt;
-            btn.onclick = () => check(btn, opt);
-            box.appendChild(btn);
+        opts.forEach(o => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(b, o);
+            box.appendChild(b);
         });
         speakWord();
     }
 
-    function check(btn, choice) {
-        const isRight = (choice === currentItem.ch);
-        const btns = document.querySelectorAll('.opt-btn');
-        btns.forEach(b => b.disabled = true);
-
-        if (isRight) {
+    function check(btn, val) {
+        document.querySelectorAll('.opt-btn').forEach(b => b.disabled = true);
+        if (val === currentItem.ch) {
             btn.classList.add('correct');
-            score += 10;
-            
-            // 如果是在「錯題模式」答對，從錯題本移除
-            if (currentMode === 'review') {
+            correctCount++;
+            if (currentPool === wrongWords) { // 錯題模式答對則移除
                 wrongWords = wrongWords.filter(w => w.en !== currentItem.en);
-                saveWrongWords();
             }
         } else {
             btn.classList.add('wrong');
-            btns.forEach(b => { if(b.innerText === currentItem.ch) b.classList.add('correct'); });
-            
-            // 加入錯題本（避免重複加入）
-            if (!wrongWords.some(w => w.en === currentItem.en)) {
-                wrongWords.push(currentItem);
-                saveWrongWords();
-            }
+            document.querySelectorAll('.opt-btn').forEach(b => {
+                if(b.innerText === currentItem.ch) b.classList.add('correct');
+            });
+            if(!wrongWords.find(w => w.en === currentItem.en)) wrongWords.push(currentItem);
         }
-
-        setTimeout(() => {
-            currentIndex++;
-            nextQuestion();
-        }, 1200);
+        localStorage.setItem('wrongWords', JSON.stringify(wrongWords));
+        setTimeout(() => { currentIndex++; showQuestion(); }, 1200);
     }
 
-    function saveWrongWords() {
-        localStorage.setItem('wrongWords', JSON.stringify(wrongWords));
+    function showResult() {
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        
+        const totalScore = Math.round((correctCount / currentPool.length) * 100);
+        document.getElementById('final-score').innerText = totalScore;
+        
+        let msg = "";
+        if (totalScore === 100) msg = "🎯 完美獵人！你已經完全掌握這些單字了！";
+        else if (totalScore >= 80) msg = "🔥 太強了！你離單字大師只差一步！";
+        else if (totalScore >= 60) msg = "👍 不錯喔！繼續保持練習，你會越來越棒！";
+        else msg = "🏹 獵人還在磨練中！多看錯題本，下次一定會進步！";
+        
+        document.getElementById('feedback-text').innerText = msg;
     }
 
     function speakWord() {
-        const msg = new SpeechSynthesisUtterance(currentItem.en);
-        msg.lang = 'en-US';
-        msg.rate = 0.8;
-        window.speechSynthesis.speak(msg);
+        const u = new SpeechSynthesisUtterance(currentItem.en);
+        u.lang = 'en-US';
+        window.speechSynthesis.speak(u);
     }
 
     function goHome() {
         document.getElementById('home-screen').classList.remove('hidden');
-        document.getElementById('quiz-screen').classList.add('hidden');
-        updateHomeStats();
+        document.getElementById('result-screen').classList.add('hidden');
+        document.getElementById('wrong-count').innerText = wrongWords.length;
     }
 
-    // 初始呼叫
-    updateHomeStats();
+    goHome();
 </script>
-
 </body>
 </html>
