@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>國中 2000 單字 - 劍橋獵人版</title>
+    <title>國中 2000 單字獵人</title>
     <style>
         :root {
-            --primary-blue: #112b46; /* 劍橋深藍 */
+            --primary-blue: #112b46;
             --accent-blue: #d2e4f7;
             --word-color: #1d2a57;
             --pos-color: #0084a8;
@@ -29,209 +29,167 @@
             background: white;
             width: 90%;
             max-width: 450px;
+            min-height: 500px;
             padding: 30px;
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            position: relative;
-        }
-
-        /* 進度條 */
-        .progress-header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            color: #7f8c8d;
-            font-size: 0.9rem;
+            flex-direction: column;
         }
 
-        .bar-container {
-            flex-grow: 1;
-            height: 8px;
-            background: #eee;
-            border-radius: 10px;
-            margin: 0 15px;
-            overflow: hidden;
+        .hidden { display: none !important; }
+
+        /* 首頁樣式 */
+        #home-screen {
+            text-align: center;
+            margin: auto;
         }
 
-        #progress-fill {
-            height: 100%;
-            background: #3498db;
-            width: 0%;
-            transition: width 0.4s ease;
-        }
-
-        /* 劍橋詞典風格卡片 */
-        .word-header {
-            text-align: left;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 20px;
-        }
-
-        .en-word {
-            font-size: 3rem;
-            font-weight: bold;
-            color: var(--word-color);
-            margin: 0;
-            letter-spacing: -1px;
-        }
-
-        .pos-tag {
-            display: inline-block;
-            color: var(--pos-color);
-            font-style: italic;
-            font-weight: bold;
-            font-size: 1.1rem;
-            margin-top: 5px;
-        }
-
-        .pronunciation {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            gap: 10px;
-        }
-
-        .phonetic {
-            color: #555;
-            font-family: 'Lucida Sans Unicode', sans-serif;
-            font-size: 1.2rem;
-        }
-
-        .speaker-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: #3498db;
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            transition: transform 0.2s;
-        }
-
-        .speaker-btn:hover { transform: scale(1.2); }
-
-        /* 選項按鈕 */
-        .options-grid {
-            display: grid;
-            gap: 15px;
-        }
-
-        .opt-btn {
-            background: #f8fbff;
-            border: 2px solid var(--accent-blue);
-            padding: 18px;
-            font-size: 1.2rem;
-            border-radius: 15px;
-            color: var(--primary-blue);
-            cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            font-weight: 500;
-        }
-
-        .opt-btn:hover {
-            background: var(--accent-blue);
-            border-color: #3498db;
-        }
-
-        /* 回饋動畫 */
-        .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
-        .wrong { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; }
+        .logo { font-size: 3rem; margin-bottom: 10px; }
+        .main-title { color: var(--primary-blue); margin-bottom: 40px; }
         
-        .shake { animation: shake 0.5s; }
-        @keyframes shake {
-            0%, 100% {transform: translateX(0);}
-            25% {transform: translateX(-10px);}
-            75% {transform: translateX(10px);}
+        .menu-btn {
+            width: 100%;
+            padding: 20px;
+            margin: 10px 0;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-weight: bold;
         }
+
+        .btn-start { background: var(--primary-blue); color: white; }
+        .btn-wrong { background: white; border: 2px solid var(--primary-blue); color: var(--primary-blue); }
+        .menu-btn:hover { transform: translateY(-3px); opacity: 0.9; }
+
+        /* 測驗區域樣 style 同前次 */
+        .progress-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; color: #7f8c8d; }
+        .bar-container { flex-grow: 1; height: 8px; background: #eee; border-radius: 10px; margin: 0 15px; overflow: hidden; }
+        #progress-fill { height: 100%; background: #3498db; width: 0%; transition: width 0.4s; }
+
+        .word-header { text-align: left; margin-bottom: 30px; border-bottom: 1px solid #eee; padding-bottom: 20px; }
+        .en-word { font-size: 2.8rem; font-weight: bold; color: var(--word-color); margin: 0; }
+        .pos-tag { color: var(--pos-color); font-style: italic; font-weight: bold; font-size: 1rem; }
+        .pronunciation { display: flex; align-items: center; margin-top: 10px; gap: 10px; }
+        .phonetic { color: #555; font-size: 1.1rem; }
+        .speaker-btn { background: none; border: none; cursor: pointer; color: #3498db; }
+
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn { background: #f8fbff; border: 2px solid var(--accent-blue); padding: 16px; font-size: 1.1rem; border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .correct { background: var(--success) !important; color: white; border-color: var(--success); }
+        .wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
+        
+        .back-link { margin-top: 20px; color: #95a5a6; cursor: pointer; text-decoration: underline; font-size: 0.9rem; text-align: center; }
     </style>
 </head>
 <body>
 
 <div id="app-container">
-    <div class="progress-header">
-        <span id="q-count">1 / 20</span>
-        <div class="bar-container"><div id="progress-fill"></div></div>
-        <span id="score-display">🎯 0</span>
+    <div id="home-screen">
+        <div class="logo">🏹</div>
+        <h1 class="main-title">單字獵人挑戰</h1>
+        <button class="menu-btn btn-start" onclick="startQuiz('normal')">開始練習 (20題)</button>
+        <button class="menu-btn btn-wrong" onclick="startQuiz('review')">錯題本 (<span id="wrong-count">0</span>)</button>
     </div>
 
-    <div class="word-header">
-        <h1 class="en-word" id="word-en">Loading...</h1>
-        <span class="pos-tag" id="word-pos">...</span>
-        <div class="pronunciation">
-            <span class="phonetic" id="word-kk">/.../</span>
-            <button class="speaker-btn" onclick="speakWord()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-                </svg>
-            </button>
+    <div id="quiz-screen" class="hidden">
+        <div class="progress-header">
+            <span id="q-count">1/20</span>
+            <div class="bar-container"><div id="progress-fill"></div></div>
+            <span id="score-display">🎯 0</span>
         </div>
-    </div>
 
-    <div class="options-grid" id="options-box">
+        <div class="word-header">
+            <h1 class="en-word" id="word-en">Word</h1>
+            <span class="pos-tag" id="word-pos">adj.</span>
+            <div class="pronunciation">
+                <span class="phonetic" id="word-kk">/kk/</span>
+                <button class="speaker-btn" onclick="speakWord()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/></svg>
+                </button>
+            </div>
         </div>
+
+        <div class="options-grid" id="options-box"></div>
+        <div class="back-link" onclick="goHome()">返回主選單</div>
+    </div>
 </div>
 
 <script>
-    // 擴充資料庫 (增加詞性與KK)
+    // 範例資料庫 (建議之後可以把 2000 字放進一個獨立的 JSON 檔)
     const rawData = [
-        { en: "active", kk: "/ˈæk.tɪv/", pos: "adj.", ch: "積極的" },
-        { en: "actually", kk: "/ˈæk.tʃu.ə.li/", pos: "adv.", ch: "確實" },
+        { en: "able", kk: "/ˈebl/", pos: "adj.", ch: "有能力的" },
+        { en: "absent", kk: "/ˈæbsnt/", pos: "adj.", ch: "缺席的" },
+        { en: "accept", kk: "/əkˈsɛpt/", pos: "v.", ch: "接受" },
+        { en: "accident", kk: "/ˈæksədənt/", pos: "n.", ch: "意外" },
+        { en: "across", kk: "/əˈkrɔs/", pos: "prep.", ch: "在...對面" },
+        { en: "active", kk: "/ˈæktɪv/", pos: "adj.", ch: "積極的" },
         { en: "admire", kk: "/ədˈmaɪr/", pos: "v.", ch: "欽佩" },
         { en: "advice", kk: "/ədˈvaɪs/", pos: "n.", ch: "勸告" },
-        { en: "affect", kk: "/əˈfekt/", pos: "v.", ch: "影響" },
-        { en: "afraid", kk: "/əˈfreɪd/", pos: "adj.", ch: "害怕的" },
-        { en: "agree", kk: "/əˈɡriː/", pos: "v.", ch: "同意" },
-        { en: "alive", kk: "/əˈlaɪv/", pos: "adj.", ch: "活的" },
-        { en: "allow", kk: "/əˈlaʊ/", pos: "v.", ch: "允許" },
-        { en: "ancient", kk: "/ˈeɪn.ʃənt/", pos: "adj.", ch: "古代的" },
-        { en: "available", kk: "/əˈveɪ.lə.bəl/", pos: "adj.", ch: "可獲得的" },
-        { en: "avoid", kk: "/əˈvɔɪd/", pos: "v.", ch: "避免" },
-        { en: "bakery", kk: "/ˈbeɪ.kər.i/", pos: "n.", ch: "麵包店" },
-        { en: "believe", kk: "/bɪˈliːv/", pos: "v.", ch: "相信" },
-        { en: "beyond", kk: "/biˈjɑːnd/", pos: "prep.", ch: "超出" },
-        { en: "careful", kk: "/ˈker.fəl/", pos: "adj.", ch: "小心的" },
-        { en: "celebrate", kk: "/ˈsel.ə.breɪt/", pos: "v.", ch: "慶祝" },
-        { en: "certain", kk: "/ˈsɝː.tən/", pos: "adj.", ch: "肯定的" },
-        { en: "challenge", kk: "/ˈtʃæl.ɪndʒ/", pos: "n./v.", ch: "挑戰" },
-        { en: "danger", kk: "/ˈdeɪn.dʒɚ/", pos: "n.", ch: "危險" }
+        { en: "affect", kk: "/əˈfɛkt/", pos: "v.", ch: "影響" },
+        { en: "afraid", kk: "/əˈfred/", pos: "adj.", ch: "害怕的" }
     ];
 
-    let quizPool = [...rawData].sort(() => Math.random() - 0.5).slice(0, 20);
-    let reviewQueue = []; 
+    let currentMode = 'normal'; // 'normal' 或 'review'
+    let quizPool = [];
     let currentIndex = 0;
     let score = 0;
     let currentItem = {};
 
+    // 初始化：讀取錯題本
+    let wrongWords = JSON.parse(localStorage.getItem('wrongWords')) || [];
+
+    function updateHomeStats() {
+        document.getElementById('wrong-count').innerText = wrongWords.length;
+    }
+
+    function startQuiz(mode) {
+        currentMode = mode;
+        currentIndex = 0;
+        score = 0;
+        
+        if (mode === 'normal') {
+            quizPool = [...rawData].sort(() => Math.random() - 0.5).slice(0, 20);
+        } else {
+            if (wrongWords.length === 0) {
+                alert("目前沒有錯題喔！加油！");
+                return;
+            }
+            quizPool = [...wrongWords].sort(() => Math.random() - 0.5);
+        }
+
+        document.getElementById('home-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        nextQuestion();
+    }
+
     function nextQuestion() {
         if (currentIndex < quizPool.length) {
             currentItem = quizPool[currentIndex];
-        } else if (reviewQueue.length > 0) {
-            currentItem = reviewQueue.shift();
-            // 語林獵人提示：這是複習題
-            document.body.style.background = "#fff5f5"; 
+            renderCard();
         } else {
-            alert("✨ 全數完成！你的分數是: " + score);
-            location.reload();
-            return;
+            alert(currentMode === 'normal' ? "練習結束！" : "錯題複習完成！");
+            goHome();
         }
-        renderCard();
     }
 
     function renderCard() {
         document.getElementById('word-en').innerText = currentItem.en;
         document.getElementById('word-pos').innerText = currentItem.pos;
         document.getElementById('word-kk').innerText = currentItem.kk;
-        document.getElementById('q-count').innerText = `${Math.min(currentIndex + 1, 20)} / 20`;
-        
-        // 抓取兩個選項
-        let wrongItem;
-        do {
-            wrongItem = rawData[Math.floor(Math.random() * rawData.length)];
-        } while (wrongItem.en === currentItem.en);
+        document.getElementById('q-count').innerText = `${currentIndex + 1} / ${quizPool.length}`;
+        document.getElementById('score-display').innerText = `🎯 ${score}`;
+        document.getElementById('progress-fill').style.width = `${(currentIndex / quizPool.length) * 100}%`;
 
-        const options = [currentItem.ch, wrongItem.ch].sort(() => Math.random() - 0.5);
+        // 生成干擾選項
+        let wrongOpt;
+        do {
+            wrongOpt = rawData[Math.floor(Math.random() * rawData.length)].ch;
+        } while (wrongOpt === currentItem.ch);
+
+        const options = [currentItem.ch, wrongOpt].sort(() => Math.random() - 0.5);
         const box = document.getElementById('options-box');
         box.innerHTML = '';
 
@@ -242,8 +200,6 @@
             btn.onclick = () => check(btn, opt);
             box.appendChild(btn);
         });
-
-        // 自動發音 (可選)
         speakWord();
     }
 
@@ -254,27 +210,32 @@
 
         if (isRight) {
             btn.classList.add('correct');
-            if (currentIndex < quizPool.length && quizPool[currentIndex] === currentItem) {
-                score += 10;
-                currentIndex++;
+            score += 10;
+            
+            // 如果是在「錯題模式」答對，從錯題本移除
+            if (currentMode === 'review') {
+                wrongWords = wrongWords.filter(w => w.en !== currentItem.en);
+                saveWrongWords();
             }
-            document.getElementById('score-display').innerText = `🎯 ${score}`;
         } else {
             btn.classList.add('wrong');
-            document.getElementById('app-container').classList.add('shake');
-            setTimeout(() => document.getElementById('app-container').classList.remove('shake'), 500);
-            
-            // 遺忘曲線：錯了就排回複習隊列
-            if(!reviewQueue.includes(currentItem)) reviewQueue.push(currentItem);
-            
-            // 顯示正解
             btns.forEach(b => { if(b.innerText === currentItem.ch) b.classList.add('correct'); });
+            
+            // 加入錯題本（避免重複加入）
+            if (!wrongWords.some(w => w.en === currentItem.en)) {
+                wrongWords.push(currentItem);
+                saveWrongWords();
+            }
         }
 
-        const progress = (currentIndex / 20) * 100;
-        document.getElementById('progress-fill').style.width = `${progress}%`;
+        setTimeout(() => {
+            currentIndex++;
+            nextQuestion();
+        }, 1200);
+    }
 
-        setTimeout(nextQuestion, 1500);
+    function saveWrongWords() {
+        localStorage.setItem('wrongWords', JSON.stringify(wrongWords));
     }
 
     function speakWord() {
@@ -284,7 +245,14 @@
         window.speechSynthesis.speak(msg);
     }
 
-    nextQuestion();
+    function goHome() {
+        document.getElementById('home-screen').classList.remove('hidden');
+        document.getElementById('quiz-screen').classList.add('hidden');
+        updateHomeStats();
+    }
+
+    // 初始呼叫
+    updateHomeStats();
 </script>
 
 </body>
