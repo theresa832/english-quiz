@@ -3,129 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>國中 2000 單字 - 獵人記憶系統</title>
+    <title>國中 2000 單字 - 劍橋獵人版</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --accent: #3498db;
+            --primary-blue: #112b46; /* 劍橋深藍 */
+            --accent-blue: #d2e4f7;
+            --word-color: #1d2a57;
+            --pos-color: #0084a8;
             --success: #27ae60;
-            --danger: #e74c3c;
-            --bg: #f4f7f6;
+            --danger: #ff4757;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
         }
+
         body {
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
-            background-color: var(--bg);
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            background: var(--bg-gradient);
             margin: 0;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
         }
-        #app {
+
+        #app-container {
             background: white;
             width: 90%;
-            max-width: 500px;
-            padding: 2rem;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-            text-align: center;
+            max-width: 450px;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            position: relative;
         }
-        .progress-bar {
-            width: 100%;
+
+        /* 進度條 */
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        .bar-container {
+            flex-grow: 1;
             height: 8px;
             background: #eee;
-            border-radius: 4px;
-            margin-bottom: 20px;
+            border-radius: 10px;
+            margin: 0 15px;
+            overflow: hidden;
         }
+
         #progress-fill {
             height: 100%;
-            background: var(--accent);
+            background: #3498db;
             width: 0%;
-            transition: width 0.3s;
-            border-radius: 4px;
+            transition: width 0.4s ease;
         }
-        #word-card { margin: 30px 0; }
-        .en-word { font-size: 2.8rem; font-weight: bold; color: var(--primary); margin: 0; }
-        .phonetic { font-size: 1.2rem; color: #7f8c8d; margin: 5px 0; font-family: 'Arial'; }
-        .part-of-speech { 
+
+        /* 劍橋詞典風格卡片 */
+        .word-header {
+            text-align: left;
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+
+        .en-word {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--word-color);
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .pos-tag {
             display: inline-block;
-            padding: 2px 8px;
-            background: #ecf0f1;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            color: #34495e;
-        }
-        .options { display: grid; gap: 12px; margin-top: 30px; }
-        button {
-            padding: 16px;
+            color: var(--pos-color);
+            font-style: italic;
+            font-weight: bold;
             font-size: 1.1rem;
-            border: 2px solid #ddd;
-            background: white;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: 0.2s;
+            margin-top: 5px;
         }
-        button:active { transform: scale(0.98); }
-        .correct { background: var(--success) !important; color: white; border-color: var(--success); }
-        .wrong { background: var(--danger) !important; color: white; border-color: var(--danger); }
-        #stats { margin-top: 20px; font-size: 0.9rem; color: #95a5a6; }
+
+        .pronunciation {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            gap: 10px;
+        }
+
+        .phonetic {
+            color: #555;
+            font-family: 'Lucida Sans Unicode', sans-serif;
+            font-size: 1.2rem;
+        }
+
+        .speaker-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #3498db;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            transition: transform 0.2s;
+        }
+
+        .speaker-btn:hover { transform: scale(1.2); }
+
+        /* 選項按鈕 */
+        .options-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .opt-btn {
+            background: #f8fbff;
+            border: 2px solid var(--accent-blue);
+            padding: 18px;
+            font-size: 1.2rem;
+            border-radius: 15px;
+            color: var(--primary-blue);
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 500;
+        }
+
+        .opt-btn:hover {
+            background: var(--accent-blue);
+            border-color: #3498db;
+        }
+
+        /* 回饋動畫 */
+        .correct { background: var(--success) !important; color: white !important; border-color: var(--success) !important; }
+        .wrong { background: var(--danger) !important; color: white !important; border-color: var(--danger) !important; }
+        
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0%, 100% {transform: translateX(0);}
+            25% {transform: translateX(-10px);}
+            75% {transform: translateX(10px);}
+        }
     </style>
 </head>
 <body>
 
-<div id="app">
-    <div class="progress-bar"><div id="progress-fill"></div></div>
-    <div id="stats">已完成: <span id="count">0</span> / 20</div>
-    
-    <div id="word-card">
-        <div class="part-of-speech" id="pos">pos</div>
-        <div class="en-word" id="en">Word</div>
-        <div class="phonetic" id="kk">/phonetic/</div>
+<div id="app-container">
+    <div class="progress-header">
+        <span id="q-count">1 / 20</span>
+        <div class="bar-container"><div id="progress-fill"></div></div>
+        <span id="score-display">🎯 0</span>
     </div>
 
-    <div class="options" id="options">
+    <div class="word-header">
+        <h1 class="en-word" id="word-en">Loading...</h1>
+        <span class="pos-tag" id="word-pos">...</span>
+        <div class="pronunciation">
+            <span class="phonetic" id="word-kk">/.../</span>
+            <button class="speaker-btn" onclick="speakWord()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div class="options-grid" id="options-box">
         </div>
 </div>
 
 <script>
-    // 資料庫：包含 KK 音標與詞性 (依據附件內容擴充)
+    // 擴充資料庫 (增加詞性與KK)
     const rawData = [
-        { en: "able", kk: "[ˈebl]", pos: "adj.", ch: "有能力的" },
-        { en: "absent", kk: "[ˈæbsnt]", pos: "adj.", ch: "缺席的" },
-        { en: "accept", kk: "[əkˈsɛpt]", pos: "v.", ch: "接受" },
-        { en: "accident", kk: "[ˈæksədənt]", pos: "n.", ch: "意外" },
-        { en: "across", kk: "[əˈkrɔs]", pos: "prep.", ch: "在...對面" },
-        { en: "active", kk: "[ˈæktɪv]", pos: "adj.", ch: "積極的" },
-        { en: "admire", kk: "[ədˈmaɪr]", pos: "v.", ch: "欽佩" },
-        { en: "advice", kk: "[ədˈvaɪs]", pos: "n.", ch: "勸告" },
-        { en: "affect", kk: "[əˈfɛkt]", pos: "v.", ch: "影響" },
-        { en: "afraid", kk: "[əˈfred]", pos: "adj.", ch: "害怕的" },
-        { en: "agree", kk: "[əˈɡri]", pos: "v.", ch: "同意" },
-        { en: "alive", kk: "[əˈlaɪv]", pos: "adj.", ch: "活的" },
-        { en: "allow", kk: "[əˈlaʊ]", pos: "v.", ch: "允許" },
-        { en: "ancient", kk: "[ˈenʃənt]", pos: "adj.", ch: "古代的" },
-        { en: "available", kk: "[əˈveləbl]", pos: "adj.", ch: "可獲得的" },
-        { en: "avoid", kk: "[əˈvɔɪd]", pos: "v.", ch: "避免" },
-        { en: "believe", kk: "[bɪˈliv]", pos: "v.", ch: "相信" },
-        { en: "beyond", kk: "[bɪˈjɑnd]", pos: "prep.", ch: "超出" },
-        { en: "careful", kk: "[ˈkɛrfəl]", pos: "adj.", ch: "小心的" },
-        { en: "certain", kk: "[ˈsɝtn]", pos: "adj.", ch: "肯定的" }
+        { en: "active", kk: "/ˈæk.tɪv/", pos: "adj.", ch: "積極的" },
+        { en: "actually", kk: "/ˈæk.tʃu.ə.li/", pos: "adv.", ch: "確實" },
+        { en: "admire", kk: "/ədˈmaɪr/", pos: "v.", ch: "欽佩" },
+        { en: "advice", kk: "/ədˈvaɪs/", pos: "n.", ch: "勸告" },
+        { en: "affect", kk: "/əˈfekt/", pos: "v.", ch: "影響" },
+        { en: "afraid", kk: "/əˈfreɪd/", pos: "adj.", ch: "害怕的" },
+        { en: "agree", kk: "/əˈɡriː/", pos: "v.", ch: "同意" },
+        { en: "alive", kk: "/əˈlaɪv/", pos: "adj.", ch: "活的" },
+        { en: "allow", kk: "/əˈlaʊ/", pos: "v.", ch: "允許" },
+        { en: "ancient", kk: "/ˈeɪn.ʃənt/", pos: "adj.", ch: "古代的" },
+        { en: "available", kk: "/əˈveɪ.lə.bəl/", pos: "adj.", ch: "可獲得的" },
+        { en: "avoid", kk: "/əˈvɔɪd/", pos: "v.", ch: "避免" },
+        { en: "bakery", kk: "/ˈbeɪ.kər.i/", pos: "n.", ch: "麵包店" },
+        { en: "believe", kk: "/bɪˈliːv/", pos: "v.", ch: "相信" },
+        { en: "beyond", kk: "/biˈjɑːnd/", pos: "prep.", ch: "超出" },
+        { en: "careful", kk: "/ˈker.fəl/", pos: "adj.", ch: "小心的" },
+        { en: "celebrate", kk: "/ˈsel.ə.breɪt/", pos: "v.", ch: "慶祝" },
+        { en: "certain", kk: "/ˈsɝː.tən/", pos: "adj.", ch: "肯定的" },
+        { en: "challenge", kk: "/ˈtʃæl.ɪndʒ/", pos: "n./v.", ch: "挑戰" },
+        { en: "danger", kk: "/ˈdeɪn.dʒɚ/", pos: "n.", ch: "危險" }
     ];
 
-    let quizPool = [...rawData].sort(() => Math.random() - 0.5).slice(0, 20); // 隨機抽 20 題
-    let reviewQueue = []; // 遺忘曲線：存放答錯的題目
+    let quizPool = [...rawData].sort(() => Math.random() - 0.5).slice(0, 20);
+    let reviewQueue = []; 
     let currentIndex = 0;
-    let finishedCount = 0;
+    let score = 0;
     let currentItem = {};
 
-    function initQuiz() {
+    function nextQuestion() {
         if (currentIndex < quizPool.length) {
             currentItem = quizPool[currentIndex];
         } else if (reviewQueue.length > 0) {
-            // 進入遺忘曲線回訪：從錯題中隨機抽一題
             currentItem = reviewQueue.shift();
+            // 語林獵人提示：這是複習題
+            document.body.style.background = "#fff5f5"; 
         } else {
-            alert("恭喜完成本次 20 題訓練！");
+            alert("✨ 全數完成！你的分數是: " + score);
             location.reload();
             return;
         }
@@ -133,60 +220,71 @@
     }
 
     function renderCard() {
-        document.getElementById('en').innerText = currentItem.en;
-        document.getElementById('kk').innerText = currentItem.kk;
-        document.getElementById('pos').innerText = currentItem.pos;
+        document.getElementById('word-en').innerText = currentItem.en;
+        document.getElementById('word-pos').innerText = currentItem.pos;
+        document.getElementById('word-kk').innerText = currentItem.kk;
+        document.getElementById('q-count').innerText = `${Math.min(currentIndex + 1, 20)} / 20`;
         
-        // 生成選項
-        let wrongOpt;
+        // 抓取兩個選項
+        let wrongItem;
         do {
-            wrongOpt = rawData[Math.floor(Math.random() * rawData.length)].ch;
-        } while (wrongOpt === currentItem.ch);
+            wrongItem = rawData[Math.floor(Math.random() * rawData.length)];
+        } while (wrongItem.en === currentItem.en);
 
-        const options = [currentItem.ch, wrongOpt].sort(() => Math.random() - 0.5);
-        const container = document.getElementById('options');
-        container.innerHTML = '';
+        const options = [currentItem.ch, wrongItem.ch].sort(() => Math.random() - 0.5);
+        const box = document.getElementById('options-box');
+        box.innerHTML = '';
 
         options.forEach(opt => {
             const btn = document.createElement('button');
+            btn.className = 'opt-btn';
             btn.innerText = opt;
-            btn.onclick = () => handleAnswer(btn, opt);
-            container.appendChild(btn);
+            btn.onclick = () => check(btn, opt);
+            box.appendChild(btn);
         });
 
-        // 更新進度條 (以 20 題為基準)
-        const progress = (finishedCount / 20) * 100;
-        document.getElementById('progress-fill').style.width = `${Math.min(progress, 100)}%`;
-        document.getElementById('count').innerText = finishedCount;
+        // 自動發音 (可選)
+        speakWord();
     }
 
-    function handleAnswer(btn, selected) {
-        const isCorrect = (selected === currentItem.ch);
-        const allBtns = document.querySelectorAll('button');
-        allBtns.forEach(b => b.disabled = true);
+    function check(btn, choice) {
+        const isRight = (choice === currentItem.ch);
+        const btns = document.querySelectorAll('.opt-btn');
+        btns.forEach(b => b.disabled = true);
 
-        if (isCorrect) {
+        if (isRight) {
             btn.classList.add('correct');
-            // 如果是從正常題庫答對的，增加計數
             if (currentIndex < quizPool.length && quizPool[currentIndex] === currentItem) {
+                score += 10;
                 currentIndex++;
-                finishedCount++;
             }
+            document.getElementById('score-display').innerText = `🎯 ${score}`;
         } else {
             btn.classList.add('wrong');
-            // 顯示正確答案
-            allBtns.forEach(b => { if(b.innerText === currentItem.ch) b.classList.add('correct'); });
+            document.getElementById('app-container').classList.add('shake');
+            setTimeout(() => document.getElementById('app-container').classList.remove('shake'), 500);
             
-            // 語林獵人邏輯：答錯的單字丟進 reviewQueue 末端，稍後再次出現
-            if (!reviewQueue.includes(currentItem)) {
-                reviewQueue.push(currentItem);
-            }
+            // 遺忘曲線：錯了就排回複習隊列
+            if(!reviewQueue.includes(currentItem)) reviewQueue.push(currentItem);
+            
+            // 顯示正解
+            btns.forEach(b => { if(b.innerText === currentItem.ch) b.classList.add('correct'); });
         }
 
-        setTimeout(initQuiz, 1200);
+        const progress = (currentIndex / 20) * 100;
+        document.getElementById('progress-fill').style.width = `${progress}%`;
+
+        setTimeout(nextQuestion, 1500);
     }
 
-    initQuiz();
+    function speakWord() {
+        const msg = new SpeechSynthesisUtterance(currentItem.en);
+        msg.lang = 'en-US';
+        msg.rate = 0.8;
+        window.speechSynthesis.speak(msg);
+    }
+
+    nextQuestion();
 </script>
 
 </body>
