@@ -40,7 +40,8 @@
         .hidden { display: none !important; }
 
         /* 首頁 */
-        .main-title { color: var(--cambridge-blue); font-size: 2.5rem; margin-bottom: 5px; }
+        #home-screen { display: flex; flex-direction: column; height: 100%; justify-content: center; }
+        .main-title { color: var(--cambridge-blue); font-size: 2.5rem; margin: 10px 0; }
         .subtitle { color: #666; margin-bottom: 40px; letter-spacing: 2px; }
         .menu-btn {
             width: 100%;
@@ -77,7 +78,7 @@
             transition: 0.2s;
         }
 
-        /* 結算畫面 */
+        /* 結算區 */
         .score-circle {
             width: 150px; height: 150px; border-radius: 50%;
             background: var(--secondary-gradient);
@@ -116,53 +117,36 @@
                 </button>
             </div>
         </div>
-
         <div id="options-box"></div>
     </div>
 
     <div id="result-screen" class="hidden">
         <h1 style="color: var(--cambridge-blue);">練習完成！</h1>
-        <div class="score-circle" id="final-score">0</div>
+        <div class="score-circle" id="final-score">0分</div>
         <div class="feedback-msg" id="feedback-text">太棒了！</div>
         <button class="menu-btn btn-start" onclick="goHome()">回首頁</button>
     </div>
 </div>
 
-<script>
-    [cite_start]// 單字資料庫 (整理自 PDF) [cite: 1]
-    const rawData = [
-        { en: "able", pos: "adj.", ch: "有能力的", kk: "/ˈebl/" },
-        { en: "about", pos: "prep.", ch: "有關", kk: "/əˈbaʊt/" },
-        { en: "above", pos: "adv.", ch: "在上方", kk: "/əˈbʌv/" },
-        { en: "abroad", pos: "adv.", ch: "在國外", kk: "/əˈbrɔːd/" },
-        { en: "absent", pos: "adj.", ch: "缺席的", kk: "/ˈæbsənt/" },
-        { en: "accept", pos: "v.", ch: "接受", kk: "/əkˈsept/" },
-        { en: "accident", pos: "n.", ch: "意外", kk: "/ˈæksɪdənt/" },
-        { en: "across", pos: "prep.", ch: "在...對面", kk: "/əˈkrɔːs/" },
-        { en: "active", pos: "adj.", ch: "積極的", kk: "/ˈæktɪv/" },
-        { en: "actually", pos: "adv.", ch: "確實", kk: "/ˈæktʃuəli/" },
-        { en: "admire", pos: "v.", ch: "欽佩", kk: "/ədˈmaɪər/" },
-        { en: "advice", pos: "n.", ch: "勸告", kk: "/ədˈvaɪs/" },
-        { en: "affect", pos: "v.", ch: "影響", kk: "/əˈfekt/" },
-        { en: "afraid", pos: "adj.", ch: "害怕的", kk: "/əˈfreɪd/" },
-        { en: "alive", pos: "adj.", ch: "活的", kk: "/əˈlaɪv/" },
-        { en: "allow", pos: "v.", ch: "允許", kk: "/əˈlaʊ/" },
-        { en: "ancient", pos: "adj.", ch: "古代的", kk: "/ˈeɪnʃənt/" },
-        { en: "available", pos: "adj.", ch: "可獲得的", kk: "/əˈveɪləbl/" },
-        { en: "avoid", pos: "v.", ch: "避免", kk: "/əˈvɔɪd/" },
-        { en: "bakery", pos: "n.", ch: "麵包店", kk: "/ˈbeɪkəri/" }
-    ];
+<script src="data.js"></script>
 
+<script>
     let wrongWords = JSON.parse(localStorage.getItem('wrongWords')) || [];
     let currentPool = [];
     let currentIndex = 0;
     let correctCount = 0;
     let currentItem = {};
 
+    function updateStats() {
+        document.getElementById('wrong-count').innerText = wrongWords.length;
+    }
+
     function startQuiz(mode) {
         currentIndex = 0;
         correctCount = 0;
         if (mode === 'normal') {
+            // 從 data.js 讀取 rawData
+            if (typeof rawData === 'undefined') return alert("找不到單字庫(data.js)，請檢查檔案！");
             currentPool = [...rawData].sort(() => Math.random() - 0.5).slice(0, 20);
         } else {
             if (wrongWords.length === 0) return alert("錯題本目前是空的唷！");
@@ -207,7 +191,7 @@
         if (val === currentItem.ch) {
             btn.classList.add('correct');
             correctCount++;
-            if (currentPool === wrongWords) { // 錯題模式答對則移除
+            if (currentPool.length !== 20 && currentPool === wrongWords) {
                 wrongWords = wrongWords.filter(w => w.en !== currentItem.en);
             }
         } else {
@@ -226,7 +210,7 @@
         document.getElementById('result-screen').classList.remove('hidden');
         
         const totalScore = Math.round((correctCount / currentPool.length) * 100);
-        document.getElementById('final-score').innerText = totalScore;
+        document.getElementById('final-score').innerText = totalScore + "分";
         
         let msg = "";
         if (totalScore === 100) msg = "🎯 完美獵人！你已經完全掌握這些單字了！";
@@ -245,11 +229,12 @@
 
     function goHome() {
         document.getElementById('home-screen').classList.remove('hidden');
+        document.getElementById('quiz-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.add('hidden');
-        document.getElementById('wrong-count').innerText = wrongWords.length;
+        updateStats();
     }
 
-    goHome();
+    updateStats();
 </script>
 </body>
 </html>
