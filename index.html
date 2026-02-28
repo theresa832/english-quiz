@@ -251,8 +251,7 @@
             <div class="pos-tag" id="word-pos">noun</div>
         </div>
 
-        <div class="options-area" id="options-box">
-            </div>
+        <div class="options-area" id="options-box"></div>
     </div>
 
     <div id="result-screen" class="result-area hidden">
@@ -264,7 +263,6 @@
 </div>
 
 <script>
-    // 單字資料庫 (示範 A-C 部分)
     const wordBank = [
         { en: "able", pos: "adj.", ch: "有能力的" },
         { en: "about", pos: "prep.", ch: "有關" },
@@ -347,7 +345,7 @@
         { en: "cheap", pos: "adj.", ch: "便宜的" },
         { en: "check", pos: "v.", ch: "檢查" },
         { en: "chicken", pos: "n.", ch: "雞" },
-        { en: "child", pos: "n.", ch: "小孩" }
+        { en: "child", pos: "n.", ch: "小孩" },
         { en: "daily", pos: "adj.", ch: "每日的" },
         { en: "dance", pos: "v.", ch: "跳舞" },
         { en: "danger", pos: "n.", ch: "危險" },
@@ -586,7 +584,7 @@
         { en: "fun", pos: "n.", ch: "樂趣" },
         { en: "funny", pos: "adj.", ch: "滑稽的" },
         { en: "furniture", pos: "n.", ch: "家具" },
-        { en: "future", pos: "n.", ch: "未來" }
+        { en: "future", pos: "n.", ch: "未來" },
         { en: "gain", pos: "v.", ch: "獲得" }, 
         { en: "game", pos: "n.", ch: "遊戲" },
         { en: "garage", pos: "n.", ch: "車庫" },
@@ -663,7 +661,7 @@
         { en: "happen", pos: "v.", ch: "發生" },
         { en: "happy", pos: "adj.", ch: "快樂的" },
         { en: "hard", pos: "adj.", ch: "硬的;困難的" },
-        { en: "hardly", pos: "adv.", ch: "幾乎不" },
+        { Hard: "hardly", pos: "adv.", ch: "幾乎不" },
         { en: "hat", pos: "n.", ch: "帽子" },
         { en: "hate", pos: "v.", ch: "討厭" },
         { en: "have", pos: "v.", ch: "有" },
@@ -729,7 +727,6 @@
         { en: "hurry", pos: "v.", ch: "趕快" },
         { en: "hurt", pos: "v.", ch: "受傷" },
         { en: "husband", pos: "n.", ch: "丈夫" },
-        // ... 此處已整合 PDF 後續所有字庫 (I-Z)
         { en: "idea", pos: "n.", ch: "點子" },
         { en: "important", pos: "adj.", ch: "重要的" },
         { en: "jacket", pos: "n.", ch: "夾克" },
@@ -763,13 +760,17 @@
         { en: "year", pos: "n.", ch: "年份" },
         { en: "zebra", pos: "n.", ch: "斑馬" } 
     ];
+
     let wrongWords = JSON.parse(localStorage.getItem('wrongWords_v2')) || [];
     let currentPool = [];
     let currentIndex = 0;
     let score = 0;
 
     function updateWrongCount() {
-        document.getElementById('wrong-count').innerText = wrongWords.length;
+        const countElement = document.getElementById('wrong-count');
+        if (countElement) {
+            countElement.innerText = wrongWords.length;
+        }
     }
 
     function initQuiz(mode) {
@@ -801,7 +802,6 @@
         document.getElementById('word-en').innerText = item.en;
         document.getElementById('word-pos').innerText = item.pos;
 
-        // 隨機產生一個錯誤選項 (二選一)
         let wrongOpt;
         do {
             wrongOpt = wordBank[Math.floor(Math.random() * wordBank.length)].ch;
@@ -831,14 +831,12 @@
         if (isCorrect) {
             btn.classList.add('correct');
             score++;
-            // 答對且在錯題本中，則移除
             wrongWords = wrongWords.filter(w => w.en !== currentItem.en);
         } else {
             btn.classList.add('wrong');
             btns.forEach(b => {
                 if (b.innerText === currentItem.ch) b.classList.add('correct');
             });
-            // 答錯則加入錯題本
             if (!wrongWords.find(w => w.en === currentItem.en)) {
                 wrongWords.push(currentItem);
             }
@@ -883,7 +881,6 @@
         updateWrongCount();
     }
 
-    // 啟動初始化
     updateWrongCount();
 </script>
 </body>
